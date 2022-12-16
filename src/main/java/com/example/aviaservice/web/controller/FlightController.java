@@ -2,6 +2,7 @@ package com.example.aviaservice.web.controller;
 
 import com.example.aviaservice.dto.FlightDto;
 import com.example.aviaservice.entity.Flight;
+import com.example.aviaservice.entity.User;
 import com.example.aviaservice.repository.FlightRepository;
 import com.example.aviaservice.repository.UserRepository;
 import com.example.aviaservice.service.FlightService;
@@ -10,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
 
@@ -43,7 +45,8 @@ public class FlightController {
     }
 
     @PostMapping("/addFlight")
-    public ResponseEntity<Flight> addFlight(@RequestBody FlightDto flightDto) {
+    public ResponseEntity<Flight> addFlight(@RequestBody FlightDto flightDto, HttpServletRequest request) {
+        User u = (User) request.getAttribute("user");
         Flight flight = flightService.composeFlightInfo(flightDto);
         Flight save = flightService.save(flight);
         return new ResponseEntity<>(save, HttpStatus.CREATED);
