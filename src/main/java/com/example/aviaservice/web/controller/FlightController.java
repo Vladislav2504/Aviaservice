@@ -1,5 +1,6 @@
 package com.example.aviaservice.web.controller;
 
+import com.example.aviaservice.dto.FlightDto;
 import com.example.aviaservice.entity.Flight;
 import com.example.aviaservice.repository.FlightRepository;
 import com.example.aviaservice.repository.UserRepository;
@@ -7,10 +8,7 @@ import com.example.aviaservice.service.FlightService;
 import com.example.aviaservice.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
@@ -41,6 +39,14 @@ public class FlightController {
     public ResponseEntity<Flight> findAllFlights () {
         flightRepository.findAll();
         return new ResponseEntity<>(HttpStatus.OK);
+
+    }
+
+    @PostMapping("/addFlight")
+    public ResponseEntity<Flight> addFlight(@RequestBody FlightDto flightDto) {
+        Flight flight = flightService.composeFlightInfo(flightDto);
+        Flight save = flightService.save(flight);
+        return new ResponseEntity<>(save, HttpStatus.CREATED);
     }
 
 //    @GetMapping("/flight/{flightName}")

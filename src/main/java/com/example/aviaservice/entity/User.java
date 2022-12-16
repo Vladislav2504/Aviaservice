@@ -20,10 +20,12 @@ public class User {
     private String firstName;
     private String lastName;
     private String password;
-    private String phone;
     private String email;
 
     @ManyToMany
     private List<Flight> myFlights;
 
+    public User(String firstName, String lastName, String password, String email) {
+
+    }
 }

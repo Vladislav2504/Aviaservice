@@ -1,8 +1,12 @@
 package com.example.aviaservice.service;
 
+import com.example.aviaservice.dto.AuthDto;
+import com.example.aviaservice.entity.Flight;
 import com.example.aviaservice.entity.User;
 import com.example.aviaservice.exception.UserNotFoundException;
 import com.example.aviaservice.repository.UserRepository;
+import com.example.aviaservice.service.maper.UserMapper;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,9 +17,15 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
-    public UserService(UserRepository userRepository) {
+    public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
+        return null;
+    }
+
+    public UserService(UserRepository userRepository, UserMapper userMapper) {
         this.userRepository = userRepository;
+        this.userMapper = userMapper;
     }
 
     public boolean exists(String email, String password) throws UsernameNotFoundException {
@@ -26,6 +36,11 @@ public class UserService {
         } else {
             return false;
         }
+    }
+
+    public User composeUserInfo(AuthDto authDto) {
+        User user = userMapper.convertAuthDto(authDto);
+        return user;
     }
 
     public Optional<User> findUserById(Long id) {

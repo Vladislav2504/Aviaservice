@@ -1,10 +1,8 @@
 package com.example.aviaservice.web.controller;
 
 import com.example.aviaservice.dto.AuthDto;
-import com.example.aviaservice.dto.FlightDto;
 import com.example.aviaservice.entity.Flight;
 import com.example.aviaservice.entity.User;
-import com.example.aviaservice.exception.UserNotFoundException;
 import com.example.aviaservice.repository.FlightRepository;
 import com.example.aviaservice.repository.UserRepository;
 import com.example.aviaservice.service.FlightService;
@@ -14,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Optional;
 
 
 @RestController
@@ -33,12 +32,16 @@ public class UserController {
     }
 
     @PostMapping("/registration")
-    public ResponseEntity<User> registration(@RequestBody User user) {
-        if (user == null) {
-            throw new UserNotFoundException("Please enter valid value");
+    public ResponseEntity<User> registration(@RequestBody AuthDto authDto, User user) {
+
+       Optional<User> userFromDB = userRepository.findByEmail(user.getEmail());
+        if (userFromDB != null) {
+            return ResponseEntity.badRequest().build();
         }
-        User u = new User();
-        return new ResponseEntity<User>(HttpStatus.OK);
+
+        user = userService.composeUserInfo(authDto);
+        User save = userRepository.save(user);
+        return new ResponseEntity<>(save, HttpStatus.CREATED);
 
     }
 
@@ -49,15 +52,6 @@ public class UserController {
             return ResponseEntity.ok(s);
         }
         return ResponseEntity.badRequest().build();
-    }
-
-    @PostMapping("/addFlight")
-    public ResponseEntity<Flight> addFlight(@RequestBody FlightDto flightDto) {
-
-        // Сделать проверку на доступ (роль ADMIN, USER)
-        Flight flight = flightService.composeFlightInfo(flightDto);
-        Flight save = flightService.save(flight);
-        return new ResponseEntity<>(save, HttpStatus.CREATED);
     }
 
     @PostMapping("/{flightId}/flightBooking")

@@ -4,13 +4,21 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class AuthDto {
+
+    private Long userId;
+    @NotBlank(message = "Field cant be empty!")
     private String firstName;
+    @NotBlank(message = "Field cant be empty!")
     private String lastName;
+    @NotBlank(message = "Field cant be empty!")
     private String password;
-    private String phone;
+    @NotBlank(message = "Field cant be empty!")
     private String email;
+
 }
