@@ -7,12 +7,12 @@ import com.example.aviaservice.repository.FlightRepository;
 import com.example.aviaservice.repository.UserRepository;
 import com.example.aviaservice.service.FlightService;
 import com.example.aviaservice.service.UserService;
+import com.example.aviaservice.service.maper.UserMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Optional;
 
 
 @RestController
@@ -23,25 +23,21 @@ public class UserController {
     private final FlightService flightService;
     private final FlightRepository flightRepository;
     private final UserRepository userRepository;
+    private  final UserMapper userMapper;
 
-    public UserController(UserService userService, FlightService flightService, FlightRepository flightRepository, UserRepository userRepository) {
+    public UserController(UserService userService, FlightService flightService, FlightRepository flightRepository, UserRepository userRepository, UserMapper userMapper) {
         this.userService = userService;
         this.flightService = flightService;
         this.flightRepository = flightRepository;
         this.userRepository = userRepository;
+        this.userMapper = userMapper;
     }
 
     @PostMapping("/registration")
-    public ResponseEntity<User> registration(@RequestBody AuthDto authDto, User user) {
-
-       Optional<User> userFromDB = userRepository.findByEmail(user.getEmail());
-        if (userFromDB != null) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        user = userService.composeUserInfo(authDto);
-        User save = userRepository.save(user);
-        return new ResponseEntity<>(save, HttpStatus.CREATED);
+    public ResponseEntity<AuthDto> registration(@RequestBody AuthDto authDto, User user) {
+        userService.emailExists(user.getEmail());
+        userService.registration(userMapper.convertAuthDtoToUser(authDto));
+        return new ResponseEntity<>(authDto, HttpStatus.CREATED);
 
     }
 

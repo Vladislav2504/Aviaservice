@@ -25,7 +25,7 @@ public class User {
     @ManyToMany
     private List<Flight> myFlights;
 
-    public User(String firstName, String lastName, String password, String email) {
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "user")
+    private List<Role> roleList;
 
-    }
 }

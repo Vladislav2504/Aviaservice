@@ -11,7 +11,7 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 public class AuthDto {
 
-    private Long userId;
+    private long userId;
     @NotBlank(message = "Field cant be empty!")
     private String firstName;
     @NotBlank(message = "Field cant be empty!")
