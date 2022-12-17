@@ -1,13 +1,11 @@
 package com.example.aviaservice.service;
 
 import com.example.aviaservice.dto.AuthDto;
-import com.example.aviaservice.entity.Flight;
 import com.example.aviaservice.entity.Role;
 import com.example.aviaservice.entity.User;
 import com.example.aviaservice.exception.UserNotFoundException;
 import com.example.aviaservice.repository.UserRepository;
 import com.example.aviaservice.service.maper.UserMapper;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -42,6 +40,14 @@ public class UserService {
         }
     }
 
+    public AuthDto update(AuthDto authDto) {
+        AuthDto savedAuthDto = findUserById(authDto.getUserId());
+        savedAuthDto = userMapper.convertAuthDtoToAuthDto(authDto, savedAuthDto);
+        User user = userMapper.convertAuthDtoToUser(savedAuthDto);
+        save(user);
+        return savedAuthDto;
+    }
+
     public boolean emailExists (String email){
         Optional<User> userFromDB = userRepository.findByEmail(email);
         if (userFromDB != null) {
@@ -63,10 +69,10 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public Optional<User> findUserById(Long id) {
+    public AuthDto findUserById(Long id) {
         Optional<User> userById = userRepository.findById(id);
         if (userById.isPresent()) {
-            return userById;
+            return userMapper.convertAuthDtoToAuthDto(userById.get());
         } else {
             throw new UserNotFoundException("User not found");
         }

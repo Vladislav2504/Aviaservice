@@ -18,5 +18,20 @@ public class UserMapper {
         return user;
     }
 
+    public AuthDto convertAuthDtoToAuthDto(AuthDto authDto, AuthDto savedAuthDto) {
+        savedAuthDto.setFirstName(authDto.getFirstName());
+        savedAuthDto.setLastName(authDto.getLastName());
+        savedAuthDto.setPassword(authDto.getPassword());
+        return savedAuthDto;
+    }
 
+    public AuthDto convertAuthDtoToAuthDto(User user) {
+        AuthDto authDto = new AuthDto();
+        authDto.setUserId(user.getId());
+        authDto.setFirstName(user.getFirstName());
+        authDto.setLastName(user.getLastName());
+        authDto.setPassword(user.getPassword());
+        authDto.setEmail(user.getEmail());
+        return authDto;
+    }
 }

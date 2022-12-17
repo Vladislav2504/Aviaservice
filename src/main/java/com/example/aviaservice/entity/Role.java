@@ -21,10 +21,6 @@ public class Role {
 
     private String role;
 
-    public Role(String typeOfRole) {
-        this.role = role;
-    }
-
     @Override
     public String toString() {
         return "Role{" +

@@ -21,15 +21,11 @@ public class UserController {
 
     private final UserService userService;
     private final FlightService flightService;
-    private final FlightRepository flightRepository;
-    private final UserRepository userRepository;
     private  final UserMapper userMapper;
 
-    public UserController(UserService userService, FlightService flightService, FlightRepository flightRepository, UserRepository userRepository, UserMapper userMapper) {
+    public UserController(UserService userService, FlightService flightService, UserMapper userMapper) {
         this.userService = userService;
         this.flightService = flightService;
-        this.flightRepository = flightRepository;
-        this.userRepository = userRepository;
         this.userMapper = userMapper;
     }
 
@@ -48,6 +44,13 @@ public class UserController {
             return ResponseEntity.ok(s);
         }
         return ResponseEntity.badRequest().build();
+    }
+
+    @PutMapping("/user/{userId}")
+    public ResponseEntity<AuthDto> update(@PathVariable("userId") Long userId, @RequestBody AuthDto authDto) {
+        authDto.setUserId(userId);
+        AuthDto user = userService.update(authDto);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @PostMapping("/{flightId}/flightBooking")
